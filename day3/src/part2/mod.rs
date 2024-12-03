@@ -1,18 +1,29 @@
 use regex::Regex;
 
-fn part1(x: &str) -> usize {
-  let re = Regex::new(r"mul\(([0-9]{1,3}),([0-9]{1,3})\)").unwrap();
-  re.captures_iter(x)
-        .map(|c| c[1].parse::<usize>().unwrap() * c[2].parse::<usize>().unwrap())
-        .sum()
-}
-
 pub fn part2() -> usize {
   let input = include_str!("../input.txt");
+  let mut ans = 0;
+  let mut enabled = true;
 
-  input.split("do()")
-  .map(|x| part1(x.split("don't()").next().unwrap()))
-  .sum()
+  let re = Regex::new(r"(mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\))").unwrap();
+  let ge = Regex::new(r"\d{1,3}").unwrap();
+  for pattern in re.find_iter(&input) {
+    let pat = pattern.as_str();
+    match pat {
+      "do()" => enabled = true,
+      "don't()" => enabled = false,
+      _ => {
+          if !enabled {
+            continue;
+          }
+          let mut nums = ge.find_iter(pat);
+          let a: usize = nums.next().unwrap().as_str().parse().unwrap();
+          let b: usize = nums.next().unwrap().as_str().parse().unwrap();
+          ans += a*b;
+        }
+    }
+  }
+  ans
 }
 
 #[cfg(test)]
