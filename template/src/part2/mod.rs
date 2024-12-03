@@ -1,4 +1,5 @@
 pub fn part2() -> usize {
+  //let input = include_str!("../input.txt");
   0
 }
 
