@@ -1,6 +1,6 @@
 #[allow(unused)]
 pub fn part2() -> usize {
-  let input = include_str!("../input.txt");
+  let input = include_str!("../example.txt");
   0
 }
 
