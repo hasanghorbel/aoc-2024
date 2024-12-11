@@ -1,37 +1,38 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, mem::swap};
+
+use itertools::Itertools;
 
 pub fn part2() -> usize {
-    let input = include_str!("../input.txt")
-        .split(' ')
-        .map(|stone| stone.parse::<usize>().unwrap())
-        .collect::<Vec<usize>>();
-    let mut stones = input.into_iter().fold(HashMap::new(), |mut acc, x| {
-        *acc.entry(x).or_insert(0) += 1;
-        acc
-    });
+    let input = include_str!("../input.txt");
+
+    let mut stones: HashMap<usize, usize> = input
+        .split_whitespace()
+        .map(|x| x.parse().unwrap())
+        .counts();
+
+    let mut new: HashMap<usize, usize> = HashMap::new();
 
     for _ in 0..75 {
-        stones = blink(&stones);
-    }
-    stones.values().sum()
-}
-fn blink(stones: &HashMap<usize, usize>) -> HashMap<usize, usize> {
-    let mut new = HashMap::new();
-    stones.into_iter().for_each(|(&stone, &count)| {
-        if stone == 0 {
-            *new.entry(1).or_insert(0) += count;
-        } else {
-            let stone_str = stone.to_string();
-            if stone_str.len() % 2 == 0 {
-                let (left, right) = stone_str.split_at(stone_str.len() / 2);
-                *new.entry(left.parse().unwrap()).or_insert(0) += count;
-                *new.entry(right.parse().unwrap()).or_insert(0) += count;
+        for (stone, count) in stones.drain() {
+            if stone == 0 {
+                *new.entry(1).or_default() += count;
             } else {
-                *new.entry(stone * 2024).or_insert(0) += count;
+                let digit_count = stone.ilog10() + 1;
+                if digit_count % 2 == 0 {
+                    let left = stone / 10usize.pow(digit_count / 2);
+                    let right = stone % 10usize.pow(digit_count / 2);
+                    *new.entry(left).or_default() += count;
+                    *new.entry(right).or_default() += count;
+                } else {
+                    *new.entry(stone * 2024).or_default() += count;
+                }
             }
         }
-    });
-    new
+
+        swap(&mut stones, &mut new);
+    }
+
+    stones.values().sum()
 }
 
 #[cfg(test)]
