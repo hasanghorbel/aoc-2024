@@ -6,7 +6,7 @@ use part2::part2;
 
 fn main() {
   use std::time::Instant;
-  println!("Day ?");
+  println!("Day 11");
   println!("---------------");
   let now = Instant::now();
   part1();
