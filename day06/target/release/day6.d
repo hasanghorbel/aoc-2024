@@ -1,1 +1,0 @@
-C:\Users\hasan\Desktop\Archive\aoc-2024\day06\target\release\day6.exe: C:\Users\hasan\Desktop\Archive\aoc-2024\day06\src\input.txt C:\Users\hasan\Desktop\Archive\aoc-2024\day06\src\main.rs C:\Users\hasan\Desktop\Archive\aoc-2024\day06\src\part1\mod.rs C:\Users\hasan\Desktop\Archive\aoc-2024\day06\src\part2\mod.rs
