@@ -1,8 +1,3 @@
 target/
 
-# we're not doing anything serious here
 Cargo.lock
-
-# as requested by topaz
-src/input.txt
-src/example.txt
