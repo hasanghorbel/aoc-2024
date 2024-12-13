@@ -1,1 +1,0 @@
-C:\Users\hasan\Desktop\Archive\aoc-2024\day3\target\debug\day3.exe: C:\Users\hasan\Desktop\Archive\aoc-2024\day3\src\input.txt C:\Users\hasan\Desktop\Archive\aoc-2024\day3\src\main.rs C:\Users\hasan\Desktop\Archive\aoc-2024\day3\src\part1\mod.rs C:\Users\hasan\Desktop\Archive\aoc-2024\day3\src\part2\mod.rs
