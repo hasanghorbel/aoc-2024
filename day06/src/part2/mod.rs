@@ -12,7 +12,7 @@ pub fn part2() -> usize {
     let mut guard_y = 0;
     let mut hashtags = vec![];
 
-    // get guard(x,y) and hashtags
+    // get guard(x,y) and hashtags vec
     for i in 0..height {
         for j in 0..width {
             if grid[i][j] == '^' {
@@ -32,7 +32,7 @@ pub fn part2() -> usize {
                 continue;
             }
             hashtags.push((j, i));
-            if walk(hashtags.clone(), width, height, &guard_x, &guard_y) {
+            if walk(&hashtags, width, height, &guard_x, &guard_y) {
                 ans += 1;
             }
             hashtags.pop();
@@ -41,7 +41,7 @@ pub fn part2() -> usize {
     ans
 }
 fn walk(
-    hashtags: Vec<(usize, usize)>,
+    hashtags: &Vec<(usize, usize)>,
     width: usize,
     height: usize,
     guard_x: &usize,
