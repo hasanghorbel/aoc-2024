@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 struct ClawMachine {
     a: (isize, isize),
     b: (isize, isize),
@@ -7,47 +5,49 @@ struct ClawMachine {
 }
 
 impl ClawMachine {
-    fn new(a: &str, b: &str, c: &str) -> Self {
+    fn new() -> Self {
         Self {
-            a: get_x_y(a, '+'),
-            b: get_x_y(b, '+'),
-            prize: get_x_y(c, '='),
+            a: (0, 0),
+            b: (0, 0),
+            prize: (0, 0),
         }
     }
-    fn solve(&self) -> (isize, isize) {
-		let determinant = self.a.0  * self.b.1  - self.a.1  * self.b.0;
+    fn solve(&self) -> isize {
+        let determinant = self.a.0 * self.b.1 - self.a.1 * self.b.0;
         if determinant == 0 {
-            return (0, 0);
+            return 0;
         }
 
-		let a_pressed = self.prize.0 * self.b.1 - self.prize.1 * self.b.0;
-		let b_pressed = self.prize.1 * self.a.0 - self.prize.0 * self.a.1;
-        
+        let a_pressed = self.prize.0 * self.b.1 - self.prize.1 * self.b.0;
+        let b_pressed = self.prize.1 * self.a.0 - self.prize.0 * self.a.1;
 
-        if a_pressed % determinant == 0 && b_pressed % determinant == 0 {
-            return (a_pressed /determinant, b_pressed /determinant);
+        if a_pressed % determinant != 0 || b_pressed % determinant != 0 {
+            return 0;
         }
-        (0, 0)
+        3 * (a_pressed / determinant) + ( b_pressed / determinant)
     }
-
 }
 
-fn get_x_y(line: &str, c: char) -> (isize, isize) {
-    let (left, right) = line.split_once(',').unwrap();
-    let x = left.split_once(c).unwrap().1.parse::<isize>().unwrap();
-    let y = right.split_once(c).unwrap().1.parse::<isize>().unwrap();
-    (x, y)
-}
 
 pub fn part1() -> isize {
-    let input = format!("{}\n\n", include_str!("../input.txt"));
+    let input = include_str!("../input.txt");
 
     let mut ans = 0;
-
-    for (a, b, c, _) in input.lines().tuples() {
-        let machine = ClawMachine::new(a, b, c);
-        let (a_min, b_min) = machine.solve();
-        ans += a_min * 3 + b_min;
+    for group in input.split("\r\n\r\n") {
+        let mut machine = ClawMachine::new();
+        for line in group.lines() {
+            let (left, right) = line.split_once(": ").unwrap();
+            let coords = right.split_once(", ").unwrap();
+            let x = coords.0[2..].parse().unwrap();
+            let y = coords.1[2..].parse().unwrap();
+            match left {
+                "Button A" => machine.a = (x, y),
+                "Button B" => machine.b = (x, y),
+                "Prize" => machine.prize = (x, y),
+                _ => unreachable!(),
+            }
+        }
+        ans += machine.solve();
     }
 
     ans
