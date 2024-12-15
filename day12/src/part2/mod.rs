@@ -105,7 +105,7 @@ mod tests {
     }
     #[test]
     fn test_corners() {
-        let grid: Vec<Vec<char>> = include_str!("../example.txt")
+        let grid: Vec<Vec<char>> = include_str!("../input.txt")
             .lines()
             .map(|line| line.chars().collect())
             .collect();
