@@ -4,18 +4,18 @@ use std::ops::Add;
 use itertools::Itertools;
 
 #[derive(PartialEq, Clone, Copy, Debug)]
-enum Tile {
+enum Object {
     Empty,
     Wall,
-    Object,
+    Box,
     Robot,
 }
 
-impl From<char> for Tile {
+impl From<char> for Object {
     fn from(value: char) -> Self {
         match value {
             '#' => Self::Wall,
-            'O' => Self::Object,
+            'O' => Self::Box,
             '@' => Self::Robot,
 
             _ => Self::Empty,
@@ -24,19 +24,19 @@ impl From<char> for Tile {
 }
 
 
-impl From<Tile> for char {
-    fn from(val: Tile) -> Self {
+impl From<Object> for char {
+    fn from(val: Object) -> Self {
         match val {
-            Tile::Empty => '.',
-            Tile::Wall => '#',
-            Tile::Object => 'O',
-            Tile::Robot => '@',
+            Object::Empty => '.',
+            Object::Wall => '#',
+            Object::Box => 'O',
+            Object::Robot => '@',
         }
     }
 }
 
 struct Warehouse {
-    grid: Vec<Vec<Tile>>,
+    grid: Vec<Vec<Object>>,
     robot: (usize, usize),
     width: usize,
     height: usize,
@@ -44,20 +44,20 @@ struct Warehouse {
 
 impl Warehouse {
     fn new(input: &str) -> Self {
-        let mut grid: Vec<Vec<Tile>> = Vec::new();
+        let mut grid: Vec<Vec<Object>> = Vec::new();
         let mut robot = (0, 0);
 
         for (row, line) in input.lines().enumerate() {
             let mut grid_row = Vec::new();
 
             for (col, char) in line.char_indices() {
-                let tile = Tile::from(char);
+                let object = Object::from(char);
 
-                if tile == Tile::Robot {
+                if object == Object::Robot {
                     robot = (row, col);
                 }
 
-                grid_row.push(tile);
+                grid_row.push(object);
             }
 
             grid.push(grid_row);
@@ -77,42 +77,42 @@ impl Warehouse {
     fn move_robot(&mut self, direction: Direction) {
         let (row, col) = self.robot;
 
-        if self.can_move_tile(row, col, direction) {
-            self.move_tile(row, col, direction);
+        if self.can_move_object(row, col, direction) {
+            self.move_object(row, col, direction);
             self.robot = self.robot + direction;
         }
     }
 
-    fn move_tile(&mut self, row: usize, col: usize, direction: Direction) {
+    fn move_object(&mut self, row: usize, col: usize, direction: Direction) {
         let (next_row, next_col) = (row, col) + direction;
-        let next_tile = self.grid[next_row][next_col];
+        let next_object = self.grid[next_row][next_col];
 
-        match next_tile {
-            Tile::Empty => {
+        match next_object {
+            Object::Empty => {
                 self.grid[next_row][next_col] = self.grid[row][col];
-                self.grid[row][col] = Tile::Empty;
+                self.grid[row][col] = Object::Empty;
             }
-            Tile::Object => {
-                self.move_tile(next_row, next_col, direction);
+            Object::Box => {
+                self.move_object(next_row, next_col, direction);
                 self.grid[next_row][next_col] = self.grid[row][col];
-                self.grid[row][col] = Tile::Empty;
+                self.grid[row][col] = Object::Empty;
             }
 
-            Tile::Wall => panic!(),
-            Tile::Robot => panic!(),
+            Object::Wall => panic!(),
+            Object::Robot => panic!(),
         }
     }
 
-    fn can_move_tile(&self, row: usize, col: usize, direction: Direction) -> bool {
+    fn can_move_object(&self, row: usize, col: usize, direction: Direction) -> bool {
         let (next_row, next_col) = (row, col) + direction;
-        let next_tile = self.grid[next_row][next_col];
+        let next_object = self.grid[next_row][next_col];
 
-        match next_tile {
-            Tile::Empty => true,
-            Tile::Wall => false,
-            Tile::Object => self.can_move_tile(next_row, next_col, direction),
+        match next_object {
+            Object::Empty => true,
+            Object::Wall => false,
+            Object::Box => self.can_move_object(next_row, next_col, direction),
 
-            Tile::Robot => panic!(),
+            Object::Robot => panic!(),
         }
     }
 
@@ -124,7 +124,7 @@ impl Warehouse {
         let mut sum = 0;
         for row in 0..self.height {
             for col in 0..self.width {
-                if self.grid[row][col] == Tile::Object {
+                if self.grid[row][col] == Object::Box {
                     sum += Self::gps_coordinate(row, col);
                 }
             }
@@ -173,7 +173,7 @@ impl Display for Warehouse {
         let string = self
             .grid
             .iter()
-            .map(|row| row.iter().map(|&tile| char::from(tile)).collect::<String>())
+            .map(|row| row.iter().map(|&object| char::from(object)).collect::<String>())
             .join("\n");
 
         writeln!(f, "{string}")

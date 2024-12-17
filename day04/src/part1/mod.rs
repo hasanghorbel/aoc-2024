@@ -23,7 +23,7 @@ pub fn part1() -> usize {
             if i > 2 && (1..4).all(|k| input[i - k][j] == target[k - 1]) {
                 ans += 1;
             }
-            if i < width - 3 && (1..4).all(|k| input[i + k][j] == target[k - 1]) {
+            if i < height - 3 && (1..4).all(|k| input[i + k][j] == target[k - 1]) {
                 ans += 1;
             }
             if i > 2 && j > 2 && (1..4).all(|k| input[i - k][j - k] == target[k - 1]) {
