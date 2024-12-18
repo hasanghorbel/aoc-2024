@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::{collections::BinaryHeap, fmt::Display, ops::Add, usize};
+use std::{cmp::Reverse, collections::BinaryHeap, fmt::Display, ops::Add, usize};
 
 struct Maze {
     grid: Vec<Vec<Object>>,
@@ -67,16 +67,16 @@ impl Maze {
         let mut dist = vec![vec![usize::MAX; self.width]; self.height];
         let mut prio = BinaryHeap::new();
         dist[self.start.0][self.start.1] = 0;
-        prio.push(Tile {
+        prio.push(Reverse(Tile {
             position: self.start,
             direction: Direction::East,
             cost: 0,
-        });
-        while let Some(Tile {
+        }));
+        while let Some(Reverse(Tile {
             position,
             direction,
             cost,
-        }) = prio.pop()
+        })) = prio.pop()
         {
             let (row, col) = position;
             if position == self.end && cost < min_cost {
@@ -103,11 +103,11 @@ impl Maze {
 
                 if next_cost < dist[next_row][next_col] {
                     dist[next_row][next_col] = next_cost;
-                    prio.push(Tile {
+                    prio.push(Reverse(Tile {
                         position: (next_row, next_col),
                         direction: next_dir,
                         cost: next_cost,
-                    });
+                    }));
                 }
             }
         }
