@@ -134,22 +134,24 @@ pub fn part2() -> String {
 
     let mut max = corrupted_bytes.len() - 1;
     let mut min = 0;
-	let old_grid = memory.grid.clone();
+    let old_grid = memory.grid.clone();
 
     while min < max {
-		let mid = (min + max) / 2;
-		for idx in 0..=mid {
-        	memory.corrupt_byte(corrupted_bytes[idx]);
-		}
+        let mid = (min + max) / 2;
+        for idx in 0..=mid {
+            memory.corrupt_byte(corrupted_bytes[idx]);
+        }
         if memory.bfs_reachable() {
-			min = mid + 1;
-		} else {
-			max = mid;
-		}
-		memory = Memory {grid: old_grid.clone()};
+            min = mid + 1;
+        } else {
+            max = mid;
+        }
+        memory = Memory {
+            grid: old_grid.clone(),
+        };
     }
     let (x, y) = corrupted_bytes[min];
-	format!("{x},{y}")
+    format!("{x},{y}")
 }
 
 #[cfg(test)]

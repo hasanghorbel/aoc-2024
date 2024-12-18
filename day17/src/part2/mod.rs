@@ -1,7 +1,5 @@
-#[allow(unused)]
 pub fn part2() -> usize {
-  let input = include_str!("../example.txt");
-  0
+	0
 }
 
 #[cfg(test)]
@@ -10,7 +8,7 @@ mod tests {
 
     #[test]
     fn test() {
-      let ans = part2();
-      println!("{}", ans);
+        let ans = part2();
+        println!("{}", ans);
     }
 }
