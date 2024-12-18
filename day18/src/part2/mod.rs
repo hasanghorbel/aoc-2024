@@ -118,7 +118,7 @@ impl Memory {
 const LENGTH: usize = 71;
 const BYTES: usize = 1024;
 
-pub fn part2() -> (usize, usize) {
+pub fn part2() -> String {
     let input = include_str!("../input.txt");
     let mut memory = Memory::from(input);
 
@@ -131,12 +131,25 @@ pub fn part2() -> (usize, usize) {
                 .unwrap()
         })
         .collect();
-    let mut idx = 0;
-    while memory.bfs_reachable() {
-        memory.corrupt_byte(corrupted_bytes[idx]);
-        idx += 1
+
+    let mut max = corrupted_bytes.len() - 1;
+    let mut min = 0;
+	let old_grid = memory.grid.clone();
+
+    while min < max {
+		let mid = (min + max) / 2;
+		for idx in 0..=mid {
+        	memory.corrupt_byte(corrupted_bytes[idx]);
+		}
+        if memory.bfs_reachable() {
+			min = mid + 1;
+		} else {
+			max = mid;
+		}
+		memory = Memory {grid: old_grid.clone()};
     }
-    corrupted_bytes[idx - 1]
+    let (x, y) = corrupted_bytes[min];
+	format!("{x},{y}")
 }
 
 #[cfg(test)]
